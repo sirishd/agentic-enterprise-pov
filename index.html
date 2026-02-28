@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Agentic Enterprise — Architecture, Platforms & Strategy</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f5f7fa; color: #2d3748; line-height: 1.5; }
+
+  .header { background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 100%); color: white; padding: 48px 40px 36px; }
+  .header h1 { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+  .header p { font-size: 16px; opacity: 0.85; max-width: 780px; }
+  .header .meta { font-size: 13px; opacity: 0.55; margin-top: 12px; }
+
+  .nav { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 0 40px; display: flex; gap: 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.05); overflow-x: auto; }
+  .nav button { background: none; border: none; padding: 14px 18px; font-size: 13.5px; font-weight: 600; color: #718096; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap; }
+  .nav button:hover { color: #2b6cb0; }
+  .nav button.active { color: #2b6cb0; border-bottom-color: #2b6cb0; }
+
+  .section { display: none; padding: 32px 40px 48px; max-width: 1400px; margin: 0 auto; overflow: visible; }
+  .section.active { display: block; }
+  .section h2 { font-size: 24px; color: #1a365d; margin-bottom: 6px; }
+  .section .subtitle { font-size: 14px; color: #718096; margin-bottom: 28px; }
+
+  /* Heatmap */
+  .hm-wrap { overflow: visible; padding-top: 80px; margin-top: -80px; }
+  .heatmap { width: 100%; border-collapse: separate; border-spacing: 4px; }
+  .heatmap th { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #4a5568; padding: 10px 8px; text-align: center; background: #edf2f7; border-radius: 6px; }
+  .heatmap th:first-child { text-align: left; min-width: 155px; }
+  .heatmap td { text-align: center; padding: 14px 8px; border-radius: 6px; font-weight: 700; font-size: 12px; color: #fff; cursor: default; transition: transform 0.15s, box-shadow 0.15s; }
+  .heatmap td:hover { transform: scale(1.04); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+  .heatmap td.lc { text-align: left; color: #2d3748; background: #fff !important; font-weight: 600; font-size: 13px; }
+  .heatmap td.lc:hover { transform: none; box-shadow: none; }
+
+  .r-best { background: #38a169; }
+  .r-good { background: #68d391; color: #1a4731 !important; }
+  .r-avg  { background: #ecc94b; color: #744210 !important; }
+  .r-below { background: #ed8936; }
+  .r-poor { background: #e53e3e; }
+
+  .legend { display: flex; gap: 16px; margin-top: 18px; flex-wrap: wrap; align-items: center; }
+  .legend span { font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+  .legend .swatch { width: 18px; height: 18px; border-radius: 4px; display: inline-block; }
+
+  .tip { position: relative; }
+  .tip .tt { visibility: hidden; background: #2d3748; color: #fff; font-size: 12px; font-weight: 400; padding: 8px 12px; border-radius: 6px; position: absolute; z-index: 200; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); width: max-content; max-width: 260px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); pointer-events: none; opacity: 0; transition: opacity 0.2s; line-height: 1.45; }
+  .tip:hover .tt { visibility: visible; opacity: 1; }
+  td:last-child.tip .tt { left: auto; right: 0; transform: none; }
+  td:nth-last-child(2).tip .tt { left: auto; right: -30px; transform: none; }
+
+  /* Cards */
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(370px, 1fr)); gap: 24px; margin-top: 8px; }
+  .card { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); padding: 26px; border: 1px solid #e2e8f0; }
+  .card h3 { font-size: 17px; color: #1a365d; margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
+  .card .tagline { font-size: 13px; color: #718096; margin-bottom: 14px; }
+  .card .meta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .card .mi { background: #f7fafc; border-radius: 8px; padding: 10px 12px; }
+  .card .ml { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #a0aec0; font-weight: 700; }
+  .card .mv { font-size: 13px; font-weight: 600; color: #2d3748; }
+
+  .badge-s { display: inline-block; background: #c6f6d5; color: #276749; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-right: 4px; }
+  .badge-c { display: inline-block; background: #fed7d7; color: #9b2c2c; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-right: 4px; }
+  .badge-n { display: inline-block; background: #e2e8f0; color: #4a5568; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-right: 4px; }
+
+  .sc-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+  .sc-table th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: #718096; padding: 8px 12px; border-bottom: 2px solid #e2e8f0; }
+  .sc-table td { padding: 10px 12px; font-size: 13px; border-bottom: 1px solid #edf2f7; vertical-align: top; }
+
+  /* Matrix */
+  .mx { width: 100%; border-collapse: separate; border-spacing: 4px; font-size: 12px; }
+  .mx th { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #4a5568; padding: 10px 8px; text-align: center; background: #edf2f7; border-radius: 6px; }
+  .mx th:first-child { text-align: left; min-width: 140px; }
+  .mx td { text-align: center; padding: 14px 8px; border-radius: 6px; font-weight: 600; background: #fff; border: 1px solid #e2e8f0; transition: transform 0.15s, box-shadow 0.15s; color: #2d3748; }
+  .mx td:hover { transform: scale(1.02); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  .mx td:first-child { text-align: left; font-weight: 700; color: #1a365d; background: #edf2f7; border: none; }
+  .mx td:first-child:hover { transform: none; box-shadow: none; }
+
+  /* Layer tables */
+  .lt { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .lt th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #718096; padding: 8px 8px; text-align: left; border-bottom: 2px solid #e2e8f0; }
+  .lt td { padding: 10px 8px; font-size: 12.5px; border-bottom: 1px solid #edf2f7; vertical-align: top; }
+  .lt tr:hover { background: #f7fafc; }
+  .ll { font-size: 15px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px; color: #1a365d; }
+  .ll .tag { font-size: 11px; padding: 3px 10px; border-radius: 4px; font-weight: 700; color: #fff; }
+  .tl4 { background: #2b6cb0; } .tl3 { background: #3182ce; } .tl2 { background: #4299e1; } .tl1 { background: #63b3ed; color: #2a4365 !important; } .tgov { background: #90cdf4; color: #2a4365 !important; }
+
+  /* Accordion */
+  .accordion { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .acc-item { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .acc-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; transition: background 0.15s; user-select: none; }
+  .acc-header:hover { background: #f7fafc; }
+  .acc-header .acc-arrow { font-size: 14px; color: #a0aec0; transition: transform 0.25s; }
+  .acc-item.open .acc-header .acc-arrow { transform: rotate(180deg); }
+  .acc-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+  .acc-item.open .acc-body { max-height: 1200px; }
+  .acc-inner { padding: 0 20px 20px; }
+  .acc-desc { font-size: 13px; color: #718096; margin-bottom: 14px; line-height: 1.55; }
+
+  /* Imperative cards */
+  .imp-cards { display: flex; flex-direction: column; gap: 20px; margin-top: 8px; }
+  .imp-card { background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); padding: 24px 28px; border: 1px solid #e2e8f0; border-left: 5px solid #2b6cb0; }
+  .imp-card:nth-child(1) { border-left-color: #38a169; }
+  .imp-card:nth-child(2) { border-left-color: #2b6cb0; }
+  .imp-card:nth-child(3) { border-left-color: #805ad5; }
+  .imp-card h3 { font-size: 16px; color: #1a365d; margin-bottom: 8px; }
+  .imp-card p { font-size: 13.5px; color: #4a5568; line-height: 1.65; }
+
+  .insight { background: #fffff0; border: 1px solid #ecc94b; border-radius: 10px; padding: 20px 24px; margin-top: 28px; }
+  .insight strong { color: #744210; font-size: 14px; }
+  .insight p { font-size: 13.5px; color: #4a5568; margin-top: 4px; }
+
+  /* Tablet */
+  @media (max-width: 1100px) {
+    .cards { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+  }
+
+  /* Small tablet / large phone */
+  @media (max-width: 900px) {
+    .header { padding: 32px 20px 28px; }
+    .header h1 { font-size: 24px; }
+    .nav { padding: 0 8px; gap: 0; }
+    .nav button { padding: 12px 12px; font-size: 12px; }
+    .section { padding: 24px 16px 36px; }
+    .cards { grid-template-columns: 1fr; gap: 16px; }
+    .card { padding: 18px; }
+    .card .meta { grid-template-columns: 1fr; }
+    .hm-wrap { overflow-x: auto; overflow-y: visible; -webkit-overflow-scrolling: touch; padding-bottom: 8px; }
+    .heatmap { min-width: 700px; }
+    .mx { min-width: 700px; }
+    .lt { min-width: 600px; }
+    .imp-card { padding: 18px 20px; }
+    .legend { gap: 10px; }
+  }
+
+  /* Phone */
+  @media (max-width: 600px) {
+    .header { padding: 24px 16px 20px; }
+    .header h1 { font-size: 20px; line-height: 1.3; }
+    .header p { font-size: 14px; }
+    .header .meta { font-size: 11px; }
+    .nav { padding: 0 4px; }
+    .nav button { padding: 10px 8px; font-size: 11px; }
+    .section { padding: 20px 12px 32px; }
+    .section h2 { font-size: 18px; }
+    .section .subtitle { font-size: 12px; margin-bottom: 20px; }
+    .card { padding: 14px; }
+    .card h3 { font-size: 15px; }
+    .card .tagline { font-size: 12px; }
+    .card .mi { padding: 8px 10px; }
+    .card .ml { font-size: 10px; }
+    .card .mv { font-size: 12px; }
+    .heatmap { min-width: 600px; }
+    .sc-table td { font-size: 12px; padding: 8px 8px; }
+    .sc-table th { font-size: 11px; padding: 6px 8px; }
+    .badge-s, .badge-c, .badge-n { font-size: 10px; padding: 1px 6px; }
+    .imp-card { padding: 14px 16px; }
+    .imp-card h3 { font-size: 14px; }
+    .imp-card p { font-size: 12px; }
+    .insight { padding: 14px 16px; }
+    .insight strong { font-size: 13px; }
+    .insight p { font-size: 12px; }
+    .legend span { font-size: 11px; }
+    .legend .swatch { width: 14px; height: 14px; }
+    .ll { font-size: 13px; margin: 20px 0 8px; }
+    .ll .tag { font-size: 10px; padding: 2px 8px; }
+    .tip .tt { max-width: 200px; font-size: 11px; padding: 6px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>The Agentic Enterprise — Architecture, Platforms &amp; Strategy</h1>
+  <p>Comparative assessment of enterprise AI services across architectural layers: Microsoft Azure, Salesforce, Databricks, Snowflake, Google Cloud, and AWS</p>
+  <div class="meta">February 2026 &nbsp;|&nbsp; Strategic Technology Assessment</div>
+</div>
+
+<div class="nav" id="nav">
+  <button class="active" data-tab="framework">Architecture Framework</button>
+  <button data-tab="heatmap">Summary Heatmap</button>
+  <button data-tab="detailed">Detailed Assessment</button>
+  <button data-tab="bic">Best-in-Class</button>
+
+  <button data-tab="vendors">Strengths / Gaps</button>
+  <button data-tab="takeaways">Key Takeaways</button>
+</div>
+
+<!-- ══════ ARCHITECTURE FRAMEWORK ══════ -->
+<div class="section active" id="framework">
+  <h2>The Paradigm Shift — Architect for Decision Flow, Not Tools</h2>
+  <p class="subtitle">To achieve desired business outcomes, there needs to be an operating-model shift — not a platform upgrade — designed across four layers.</p>
+
+  <div style="display:flex; gap:40px; align-items:stretch; flex-wrap:wrap; margin-top:8px;">
+
+    <!-- Layer Stack Visual — Governance wraps L1-L4 -->
+    <div style="flex:1; min-width:340px; max-width:560px;">
+      <h3 style="font-size:16px; color:#1a365d; margin-bottom:18px;">The Four Layers of an AI-Ready Enterprise</h3>
+      <div style="position:relative; border:3px solid #d69e2e; border-radius:16px; padding:16px 20px 18px; background:linear-gradient(135deg,#fffdf5 0%,#fefcf0 100%);">
+        <!-- Inner layer stack -->
+        <div style="display:flex; flex-direction:column; gap:6px; margin:8px 24px 6px;">
+          <div style="background:linear-gradient(135deg,#1a365d,#2b6cb0); color:#fff; padding:18px 22px; border-radius:10px;">
+            <div style="font-size:15px; font-weight:700;">L4 — Agents &amp; Copilots</div>
+            <div style="font-size:12px; opacity:0.85; margin-top:3px; font-style:italic;">Autonomous workforce reasoning over data and executing actions with oversight</div>
+          </div>
+          <div style="text-align:center; color:#a0aec0; font-size:16px; line-height:1;">&#8595;</div>
+          <div style="background:linear-gradient(135deg,#2b5a8e,#3182ce); color:#fff; padding:18px 22px; border-radius:10px;">
+            <div style="font-size:15px; font-weight:700;">L3 — Context &amp; Semantics</div>
+            <div style="font-size:12px; opacity:0.85; margin-top:3px; font-style:italic;">Business meaning, rules, and decision precedent in purpose-built stores</div>
+          </div>
+          <div style="text-align:center; color:#a0aec0; font-size:16px; line-height:1;">&#8595;</div>
+          <div style="background:linear-gradient(135deg,#2c6faa,#4299e1); color:#fff; padding:18px 22px; border-radius:10px;">
+            <div style="font-size:15px; font-weight:700;">L2 — Unified Data Estate</div>
+            <div style="font-size:12px; opacity:0.85; margin-top:3px; font-style:italic;">Analytical substrate unifying data across cloud and on-prem</div>
+          </div>
+          <div style="text-align:center; color:#a0aec0; font-size:16px; line-height:1;">&#8595;</div>
+          <div style="background:linear-gradient(135deg,#3a7cc6,#63b3ed); color:#fff; padding:18px 22px; border-radius:10px;">
+            <div style="font-size:15px; font-weight:700;">L1 — Operational Systems</div>
+            <div style="font-size:12px; opacity:0.85; margin-top:3px; font-style:italic;">Systems of Record storing transactions, state, and compliance data</div>
+          </div>
+        </div>
+
+        <!-- Governance bottom bar with sub-boxes -->
+        <div style="margin:24px -20px -18px; background:linear-gradient(90deg,#d69e2e,#ecc94b); color:#744210; padding:12px 14px; border-radius:0 0 13px 13px;">
+          <div style="text-align:center; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;">Cross-Layer Governance</div>
+          <div style="display:flex; gap:8px;">
+            <div style="flex:1; background:rgba(255,255,255,0.55); border:1.5px solid rgba(180,130,20,0.35); border-radius:6px; padding:8px 10px; text-align:center;">
+              <div style="font-size:12px; font-weight:700; color:#744210;">Security &amp; Privacy</div>
+            </div>
+            <div style="flex:1; background:rgba(255,255,255,0.55); border:1.5px solid rgba(180,130,20,0.35); border-radius:6px; padding:8px 10px; text-align:center;">
+              <div style="font-size:12px; font-weight:700; color:#744210;">Audit &amp; Policy</div>
+            </div>
+            <div style="flex:1; background:rgba(255,255,255,0.55); border:1.5px solid rgba(180,130,20,0.35); border-radius:6px; padding:8px 10px; text-align:center;">
+              <div style="font-size:12px; font-weight:700; color:#744210;">Automated Compliance</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Imperatives -->
+    <div style="flex:1; min-width:280px; display:flex; flex-direction:column;">
+      <h3 style="font-size:16px; color:#1a365d; margin-bottom:18px;">Key Imperatives</h3>
+      <div style="border:3px solid #cbd5e0; border-radius:16px; padding:20px 20px; background:#fff; flex:1; display:flex; flex-direction:column; justify-content:space-between; gap:12px;">
+        <div style="border-left:4px solid #a0aec0; border-radius:4px; padding:14px 18px;">
+          <div style="font-size:14px; font-weight:700; color:#1a365d; margin-bottom:4px;">AI must be designed in</div>
+          <div style="font-size:13px; color:#4a5568; line-height:1.55;">How data, decisions, and controls move across the enterprise — not bolted on as a feature.</div>
+        </div>
+        <div style="border-left:4px solid #a0aec0; border-radius:4px; padding:14px 18px;">
+          <div style="font-size:14px; font-weight:700; color:#1a365d; margin-bottom:4px;">Separation of layers enables scale</div>
+          <div style="font-size:13px; color:#4a5568; line-height:1.55;">Clear layer boundaries create scalable, governed agentic systems that can evolve independently.</div>
+        </div>
+        <div style="border-left:4px solid #a0aec0; border-radius:4px; padding:14px 18px;">
+          <div style="font-size:14px; font-weight:700; color:#1a365d; margin-bottom:4px;">Value comes from coherence across layers</div>
+          <div style="font-size:13px; color:#4a5568; line-height:1.55;">Not complexity within any one layer. The winning platform delivers end-to-end integration.</div>
+        </div>
+        <div style="border-left:4px solid #a0aec0; border-radius:4px; padding:14px 18px;">
+          <div style="font-size:14px; font-weight:700; color:#1a365d; margin-bottom:4px;">The semantic context layer is the competitive moat</div>
+          <div style="font-size:13px; color:#4a5568; line-height:1.55;">Models are commoditized. Lock-in comes from the data fabric and its vectorized semantic metadata — not the neural network.</div>
+        </div>
+        <div style="border-left:4px solid #a0aec0; border-radius:4px; padding:14px 18px;">
+          <div style="font-size:14px; font-weight:700; color:#1a365d; margin-bottom:4px;">Governance is not a layer — it's the fabric</div>
+          <div style="font-size:13px; color:#4a5568; line-height:1.55;">Security, privacy, and compliance must wrap every layer, not sit alongside them.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════ HEATMAP ══════ -->
+<div class="section" id="heatmap">
+  <h2>Microsoft Azure leads the most complete end-to-end enterprise AI stack.</h2>
+  <p class="subtitle">Platform &amp; Enterprise Services Assessment — six platforms rated across five architectural layers. Hover cells for details.</p>
+  <div class="hm-wrap">
+  <table class="heatmap">
+    <thead><tr>
+      <th>Architectural Layer</th><th>Microsoft Azure</th><th>Salesforce</th><th>Databricks</th><th>Snowflake</th><th>Google Cloud</th><th>AWS</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td class="lc">L4: Agents &amp; Copilots</td>
+        <td class="r-best tip">Microsoft Foundry / Copilot Studio<span class="tt">11,000+ models incl. Claude Opus 4.6. Model Router for dynamic cost optimization (up to 50–70% with prompt caching). Pro-code + low-code (Copilot Studio).</span></td>
+        <td class="r-best tip">Agentforce<span class="tt">Deeply embedded across Salesforce for autonomous workflows, customer service agents, and internal support.</span></td>
+        <td class="r-good tip">Agent Bricks<span class="tt">Declarative framework, auto-optimized via MLflow 3 with TAO. Supervisor Agent GA (Feb 2026), but core platform still in Beta. Strong innovation, maturing at scale.</span></td>
+        <td class="r-good tip">Snowflake Intelligence / Cortex Agents<span class="tt">GA Nov 2025. Cortex Agents plan tasks and use Cortex Analyst + Cortex Search tools. Cortex Code for AI coding. OpenAI $200M partnership.</span></td>
+        <td class="r-good tip">Gemini Enterprise (Agentspace)<span class="tt">Multi-step reasoning with long-term contextual memory. Vertex AI as compute foundation. Context Caching and Batch API for cost optimization.</span></td>
+        <td class="r-good tip">Amazon Bedrock AgentCore<span class="tt">GA Oct 2025. Runtime, Memory, Gateway, Identity, Observability services. Framework-agnostic. 13 pre-built evaluators. Policy controls.</span></td>
+      </tr>
+      <tr>
+        <td class="lc">L3: Context &amp; Semantics</td>
+        <td class="r-best tip">Work IQ, Fabric IQ, Foundry IQ<span class="tt">Tripartite context: Work IQ (M365 user context), Fabric IQ (20M+ Power BI models), Foundry IQ (RAG via Azure AI Search).</span></td>
+        <td class="r-good tip">Data 360 Vector Search<span class="tt">Converts unstructured CRM data — call transcripts, emails, PDFs — into semantic embeddings for retrieval.</span></td>
+        <td class="r-good tip">Vector Search / AI/BI Genie<span class="tt">Genie: NL data access via constrained SQL spaces. Vector Search for semantic similarity across Lakehouse data.</span></td>
+        <td class="r-good tip">Cortex Search / Semantic Views<span class="tt">Cortex Search for unstructured data retrieval. Semantic View Autopilot auto-generates governed context for agents.</span></td>
+        <td class="r-good tip">Vertex AI Vector Search<span class="tt">Vector Search 2.0: self-tuning, AI-native architecture with hybrid search. Real-time sync across enterprise repos. Under-marketed but technically strong.</span></td>
+        <td class="r-good tip">Bedrock Knowledge Bases<span class="tt">Fully managed RAG: ingestion, retrieval, prompt augmentation. S3 Vectors for cost-optimized storage. Multimodal retrieval (Nov 2025).</span></td>
+      </tr>
+      <tr>
+        <td class="lc">L2: Unified Data Estate</td>
+        <td class="r-best tip">Microsoft Fabric / OneLake<span class="tt">Unified analytical repository. $2B+ ARR, 31K customers, 60% YoY growth. Multi-cloud ingestion: S3, GCS, BigQuery.</span></td>
+        <td class="r-good tip">Data 360 (Zero-Copy)<span class="tt">Zero-copy connectors to Snowflake, BigQuery. Identity Resolution creates Golden Records via attribute matching.</span></td>
+        <td class="r-best tip">Lakehouse Storage (Delta Lake)<span class="tt">Open-source Delta Lake + Apache Iceberg. Snapshot sync mode for data freshness.</span></td>
+        <td class="r-best tip">Enterprise Lakehouse / Openflow<span class="tt">Unified storage with Iceberg REST Catalog interop. Snowflake Marketplace for data sharing. Open format support via Openflow.</span></td>
+        <td class="r-best tip">BigQuery / Cloud Storage<span class="tt">BigQuery: undisputed analytical powerhouse. BigLake tables enable cross-format security without data movement.</span></td>
+        <td class="r-best tip">Amazon S3 Data Lakes<span class="tt">S3 as foundational storage. S3 Vectors for cost-optimized embeddings. Lake Formation for access control. Glue Catalog.</span></td>
+      </tr>
+      <tr>
+        <td class="lc">L1: Operational Systems</td>
+        <td class="r-best tip">Azure DBs / Dynamics 365 / Teams<span class="tt">Azure SQL (enterprise OLTP), Cosmos DB (global, single-digit ms), PostgreSQL/HorizonDB (DiskANN vectors — preview). Dynamics 365 ERP/CRM + Teams as collaboration surface. Copilot Studio agents deploy natively into Teams. Broadest operational portfolio.</span></td>
+        <td class="r-best tip">Salesforce CRM / Slack<span class="tt">Market-leading CRM + Slack as collaboration surface. Agentforce agents deploy directly into Slack channels. Customer telemetry flows through Data 360 into agents.</span></td>
+        <td class="r-good tip">Lakebase (Serverless Postgres)<span class="tt">Built on Neon. Zero-copy branching for agent sandboxing. Reverse ETL sync to Unity Catalog. Preview June 2025, GA February 2026.</span></td>
+        <td class="r-good tip">Snowflake Postgres<span class="tt">PostgreSQL-compatible operational database. GA Feb 24, 2026 with pg_lake extensions and Postgres 17 support. Rapidly maturing for transactional AI workloads.</span></td>
+        <td class="r-good tip">AlloyDB / Cloud SQL<span class="tt">AlloyDB: PostgreSQL-compatible, optimized for AI transactional workloads. Competes with HorizonDB and Lakebase.</span></td>
+        <td class="r-best tip">Amazon Aurora / DynamoDB<span class="tt">Aurora: MySQL/PostgreSQL-compatible, serverless. DynamoDB: single-digit ms latency at any scale. Battle-tested at massive enterprise scale.</span></td>
+      </tr>
+      <tr>
+        <td class="lc">Cross-Layer: Governance</td>
+        <td class="r-best tip">Agent 365 / Microsoft Purview<span class="tt">Dual governance: Agent 365 for lifecycle/identity (Entra Agent ID), Purview for data payload (DSPM, DLP, eDiscovery).</span></td>
+        <td class="r-good tip">Data 360 Governance<span class="tt">GA Sept 2025. Automated tagging, policy-driven trust controls, flexible encryption. Integrated rather than standalone, but comprehensive.</span></td>
+        <td class="r-good tip">Unity Catalog / AI Gateway<span class="tt">Centralized governance for data, analytics, AI. RBAC, data residency, rate limits. Partner data sovereignty. Comparable depth to Horizon Catalog.</span></td>
+        <td class="r-good tip">Horizon Catalog<span class="tt">Built-in governance: access control, dynamic data masking, row-level policies, classification. Copilot for Horizon. Iceberg interop.</span></td>
+        <td class="r-avg tip">Dataplex (Universal Catalog)<span class="tt">Data mesh zones, BigLake tables, AI-driven lineage, column-level lineage (GA). Capable but under-marketed; omitted from original benchmark.</span></td>
+        <td class="r-good tip">Amazon DataZone<span class="tt">Unified data governance portal. Glue Catalog integration. Lake Formation access controls. AgentCore Policy for agent guardrails.</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="legend">
+    <span><span class="swatch r-best"></span> Best</span>
+    <span><span class="swatch r-good"></span> Good</span>
+    <span><span class="swatch r-avg"></span> Average</span>
+    <span><span class="swatch r-below"></span> Below Avg</span>
+    <span><span class="swatch r-poor"></span> Poor</span>
+    <span style="color:#a0aec0; font-size:12px; margin-left:8px;">Hover cells for details</span>
+  </div>
+</div>
+
+<!-- ══════ DETAILED ══════ -->
+<div class="section" id="detailed">
+  <h2>Detailed Layer Assessment</h2>
+  <p class="subtitle">Click each layer to expand the full platform comparison</p>
+
+  <div class="accordion">
+
+    <div class="acc-item open">
+      <div class="acc-header">
+        <div class="ll"><span class="tag tl4">L4</span> Agents &amp; Copilots — Execution &amp; Orchestration</div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body"><div class="acc-inner">
+        <p class="acc-desc">Where autonomous agents are built, deployed, and orchestrated. Microsoft leads with the broadest model catalog; Salesforce excels in CRM-native agents.</p>
+        <div class="hm-wrap"><table class="lt">
+          <thead><tr><th style="width:130px;">Capability</th><th>Microsoft</th><th>Salesforce</th><th>Databricks</th><th>Snowflake</th><th>Google Cloud</th><th>AWS</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Platform</strong></td><td>Microsoft Foundry</td><td>Agentforce</td><td>Agent Bricks</td><td>Intelligence / Cortex Agents</td><td>Gemini Enterprise</td><td>Bedrock AgentCore</td></tr>
+            <tr><td><strong>Models</strong></td><td>11K+ incl. Claude Opus 4.6</td><td>LLM-agnostic</td><td>MLflow 3 + TAO</td><td>GPT-5.2 (OpenAI), Arctic</td><td>Gemini 3.1 Pro, 200+</td><td>Claude, Llama, Mistral, Nova</td></tr>
+            <tr><td><strong>Patterns</strong></td><td>Foundry + Copilot Studio</td><td>Sub-agents, Flow Builder</td><td>Supervisor Agents</td><td>Cortex Agents + Code</td><td>Multi-step reasoning</td><td>Runtime (any framework)</td></tr>
+            <tr><td><strong>Cost</strong></td><td>Model Router (50–70%)</td><td>Platform-managed</td><td>TAO auto-optimize</td><td>Consumption + Arctic</td><td>Context Cache</td><td>S3 Vectors, Batch</td></tr>
+            <tr><td><strong>Eval</strong></td><td>Foundry eval tools</td><td>Testing sandbox</td><td>MLflow AI judges</td><td>Cortex Evaluations</td><td>Vertex AI evals</td><td>13 built-in evaluators</td></tr>
+          </tbody>
+        </table></div>
+      </div></div>
+    </div>
+
+    <div class="acc-item">
+      <div class="acc-header">
+        <div class="ll"><span class="tag tl3">L3</span> Context &amp; Semantics — Intelligence Routing</div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body"><div class="acc-inner">
+        <p class="acc-desc">The layer that determines whether agents act with precision or hallucinate. Microsoft's tripartite IQ architecture is unique in the market.</p>
+        <div class="hm-wrap"><table class="lt">
+          <thead><tr><th style="width:130px;">Capability</th><th>Microsoft</th><th>Salesforce</th><th>Databricks</th><th>Snowflake</th><th>Google Cloud</th><th>AWS</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Engine</strong></td><td>Work IQ + Fabric IQ + Foundry IQ</td><td>Data 360 Vector Search</td><td>AI/BI Genie + Vector Search</td><td>Cortex Search + Semantic Views</td><td>Vertex AI Vector Search 2.0</td><td>Bedrock Knowledge Bases</td></tr>
+            <tr><td><strong>User Context</strong></td><td>M365 patterns, org graph</td><td>CRM interaction history</td><td>Genie space configs</td><td>Intelligence NL interface</td><td>Workspace with Gemini</td><td>AgentCore Memory</td></tr>
+            <tr><td><strong>Data Context</strong></td><td>20M+ Power BI models</td><td>Golden Records</td><td>SQL-deterministic</td><td>Cortex Analyst</td><td>Real-time BigQuery sync</td><td>S3 Vectors + multimodal</td></tr>
+            <tr><td><strong>RAG</strong></td><td>Azure AI Search, multi-source</td><td>CRM semantic embeddings</td><td>Genie knowledge stores</td><td>Cortex Search</td><td>Cross-repo similarity</td><td>Fully managed RAG</td></tr>
+            <tr><td><strong>Differentiator</strong></td><td><strong>Tripartite (unique)</strong></td><td>CRM-native grounding</td><td>Synonyms → SQL</td><td>Semantic View Autopilot</td><td>Under-marketed</td><td>Multimodal retrieval</td></tr>
+          </tbody>
+        </table></div>
+      </div></div>
+    </div>
+
+    <div class="acc-item">
+      <div class="acc-header">
+        <div class="ll"><span class="tag tl2">L2</span> Unified Data Estate — Storage &amp; Analytics</div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body"><div class="acc-inner">
+        <p class="acc-desc">Foundational data infrastructure. Most platforms are competitive here; the differentiator is how tightly L2 feeds into L3 and L4.</p>
+        <div class="hm-wrap"><table class="lt">
+          <thead><tr><th style="width:130px;">Capability</th><th>Microsoft</th><th>Salesforce</th><th>Databricks</th><th>Snowflake</th><th>Google Cloud</th><th>AWS</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Platform</strong></td><td>Fabric / OneLake</td><td>Data 360</td><td>Lakehouse (Delta Lake)</td><td>Lakehouse / Openflow</td><td>BigQuery / Cloud Storage</td><td>S3 Data Lakes</td></tr>
+            <tr><td><strong>Architecture</strong></td><td>Unified analytical repo</td><td>Zero-copy connectors</td><td>Delta + Iceberg (open)</td><td>Iceberg REST Catalog</td><td>BigLake cross-format</td><td>S3 + Lake Formation</td></tr>
+            <tr><td><strong>Multi-Cloud</strong></td><td>S3, GCS, BigQuery</td><td>Snowflake, BigQuery</td><td>Iceberg Snapshot sync</td><td>Marketplace sharing</td><td>Native multi-format</td><td>Cross-account/region</td></tr>
+            <tr><td><strong>Scale</strong></td><td>$2B+ ARR, 31K customers</td><td>Identity Resolution</td><td>Open-source ecosystem</td><td>9,100+ AI accounts, ~$4.5B+</td><td>Analytics powerhouse</td><td>Largest cloud provider</td></tr>
+          </tbody>
+        </table></div>
+      </div></div>
+    </div>
+
+    <div class="acc-item">
+      <div class="acc-header">
+        <div class="ll"><span class="tag tl1">L1</span> Operational Systems — Databases, CRM &amp; Collaboration</div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body"><div class="acc-inner">
+        <p class="acc-desc">Where business transactions happen. Azure has the broadest portfolio (SQL, Cosmos DB, HorizonDB, Dynamics 365, Teams); Salesforce dominates CRM.</p>
+        <div class="hm-wrap"><table class="lt">
+          <thead><tr><th style="width:130px;">Capability</th><th>Microsoft</th><th>Salesforce</th><th>Databricks</th><th>Snowflake</th><th>Google Cloud</th><th>AWS</th></tr></thead>
+          <tbody>
+            <tr><td><strong>System</strong></td><td>Azure SQL, Cosmos DB, HorizonDB + D365 + Teams</td><td>CRM + Slack</td><td>Lakebase (Postgres)</td><td>Snowflake Postgres</td><td>AlloyDB / Cloud SQL</td><td>Aurora / DynamoDB</td></tr>
+            <tr><td><strong>AI Features</strong></td><td>Cosmos DB: global multi-model; HorizonDB: DiskANN vectors (preview)</td><td>Native telemetry to Data 360</td><td>Zero-copy branching</td><td>PG 17, pg_lake (GA Feb 2026)</td><td>PG-compatible, AI-optimized</td><td>Aurora Serverless v2</td></tr>
+            <tr><td><strong>Scale</strong></td><td>Cosmos DB: limitless; Azure SQL: proven; HorizonDB: 3,072 vCore</td><td>Market-leading CRM</td><td>Elastic separation</td><td>Rapidly scaling</td><td>High-concurrency OLTP</td><td>Battle-tested at scale</td></tr>
+          </tbody>
+        </table></div>
+      </div></div>
+    </div>
+
+    <div class="acc-item">
+      <div class="acc-header">
+        <div class="ll"><span class="tag tgov">GOV</span> Cross-Layer Governance</div>
+        <span class="acc-arrow">▼</span>
+      </div>
+      <div class="acc-body"><div class="acc-inner">
+        <p class="acc-desc">As multi-agent systems proliferate, governing agent identity separately from data payloads becomes critical. Microsoft's dual model leads.</p>
+        <div class="hm-wrap"><table class="lt">
+          <thead><tr><th style="width:130px;">Capability</th><th>Microsoft</th><th>Salesforce</th><th>Databricks</th><th>Snowflake</th><th>Google Cloud</th><th>AWS</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Platform</strong></td><td>Agent 365 + Purview</td><td>Data 360 Governance</td><td>Unity Catalog + AI Gateway</td><td>Horizon Catalog</td><td>Dataplex</td><td>DataZone + AgentCore Policy</td></tr>
+            <tr><td><strong>Agent Gov.</strong></td><td>Entra Agent ID, shadow AI registry</td><td>Policy automation (GA Sept 2025)</td><td>RBAC, rate limits, residency</td><td>Copilot for Horizon</td><td>Data mesh zones</td><td>AgentCore Policy</td></tr>
+            <tr><td><strong>Data Gov.</strong></td><td>Purview DSPM, DLP, eDiscovery</td><td>Tagging, controls, encryption</td><td>Partner data sovereignty</td><td>Masking, row-level, classification</td><td>BigLake, AI lineage</td><td>Lake Formation, Glue</td></tr>
+            <tr><td><strong>Differentiator</strong></td><td><strong>Dual: identity ≠ payload</strong></td><td>Integrated (GA Sept 2025)</td><td>Contractual restrictions</td><td>Iceberg catalog interop</td><td>Omitted from benchmarks</td><td>13 agent evaluators</td></tr>
+          </tbody>
+        </table></div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ BEST-IN-CLASS ══════ -->
+<div class="section" id="bic">
+  <h2>Best-in-Class Capabilities by Platform</h2>
+  <p class="subtitle">Key capabilities that define each platform's strongest offerings</p>
+  <div class="cards">
+    <div class="card" style="border-left: 5px solid #38a169; background: #f7fafc;">
+      <h3 style="color:#1a365d;">Microsoft Azure — Best Across the Board</h3>
+      <p class="tagline">The most consolidated full-stack enterprise AI offering</p>
+      <div class="meta">
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L4</div><div class="mv">11K+ models, Model Router</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L3</div><div class="mv">Tripartite IQ (unique)</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L2</div><div class="mv">Fabric: $2B+ ARR, 31K customers</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L1</div><div class="mv">Azure Databases + Dynamics 365 + Teams</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">Governance</div><div class="mv">Agent 365 + Purview (dual)</div></div>
+      </div>
+      <p style="font-size:13px; color:#4a5568;">Only platform with complete vertical integration across all 5 layers. Tripartite context engineering and dual governance model set the enterprise standard.</p>
+    </div>
+    <div class="card" style="border-left: 5px solid #a0aec0;">
+      <h3>Salesforce</h3>
+      <p class="tagline">CRM-native AI with zero-copy data architecture</p>
+      <div class="meta">
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L4</div><div class="mv">Agentforce (embedded)</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L3</div><div class="mv">Golden Record grounding</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L2</div><div class="mv">Zero-copy connectors</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L1</div><div class="mv">Salesforce CRM + Slack</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">Governance</div><div class="mv">Data 360 Governance (integrated)</div></div>
+      </div>
+      <p style="font-size:13px; color:#4a5568;">Agentforce tightly coupled with Data 360's zero-copy architecture ensures CRM-driven AI actions are semantically grounded and instantaneously accurate.</p>
+    </div>
+    <div class="card" style="border-left: 5px solid #a0aec0;">
+      <h3>Databricks</h3>
+      <p class="tagline">Operationalization pioneer — bridging lakes and real-time AI</p>
+      <div class="meta">
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L4</div><div class="mv">Agent Bricks + MLflow 3</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L3</div><div class="mv">AI/BI Genie (NL access)</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L2</div><div class="mv">Delta Lake + Iceberg</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L1</div><div class="mv">Lakebase (Serverless Postgres)</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">Governance</div><div class="mv">Unity Catalog + AI Gateway</div></div>
+      </div>
+      <p style="font-size:13px; color:#4a5568;">Successfully bridged analytical lakes with low-latency operational DBs through Lakebase. Most accurate column in the original benchmark.</p>
+    </div>
+    <div class="card" style="border-left: 5px solid #a0aec0;">
+      <h3>Snowflake</h3>
+      <p class="tagline">AI-native data platform with rapid enterprise adoption</p>
+      <div class="meta">
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L4</div><div class="mv">Cortex Agents + Intelligence</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L3</div><div class="mv">Cortex Search + Semantic Views</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L2</div><div class="mv">Enterprise Lakehouse, Openflow</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L1</div><div class="mv">Snowflake Postgres (GA Feb 2026)</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">Governance</div><div class="mv">Horizon Catalog (built-in)</div></div>
+      </div>
+      <p style="font-size:13px; color:#4a5568;">9,100+ AI-active accounts. $200M OpenAI partnership brings GPT-5.2 to enterprise data. Cortex Code accelerates development. AI drives 50% of new bookings.</p>
+    </div>
+    <div class="card" style="border-left: 5px solid #a0aec0;">
+      <h3>Google Cloud</h3>
+      <p class="tagline">Powerful infrastructure with unmatched cost efficiency</p>
+      <div class="meta">
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L4</div><div class="mv">Gemini Enterprise</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L3</div><div class="mv">Vertex AI Vector Search</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L2</div><div class="mv">BigQuery (analytics king)</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L1</div><div class="mv">AlloyDB / Cloud SQL</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">Governance</div><div class="mv">Dataplex (omitted from benchmarks)</div></div>
+      </div>
+      <p style="font-size:13px; color:#4a5568;">Gemini Context Caching and Batch API deliver significant cost optimization. BigQuery's dominance and Dataplex's data mesh create a powerful but under-marketed offering.</p>
+    </div>
+    <div class="card" style="border-left: 5px solid #a0aec0;">
+      <h3>AWS</h3>
+      <p class="tagline">Broadest cloud infrastructure with framework-agnostic agents</p>
+      <div class="meta">
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L4</div><div class="mv">Bedrock AgentCore</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L3</div><div class="mv">Bedrock Knowledge Bases</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L2</div><div class="mv">S3 Data Lakes + Lake Formation</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">L1</div><div class="mv">Aurora / DynamoDB</div></div>
+        <div class="mi" style="background:#edf2f7;"><div class="ml" style="color:#718096;">Governance</div><div class="mv">DataZone + AgentCore Policy</div></div>
+      </div>
+      <p style="font-size:13px; color:#4a5568;">Framework-agnostic AgentCore with 13 built-in evaluators. S3 Vectors for cost-optimized vector storage. Largest enterprise cloud provider with battle-tested operational databases.</p>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- ══════ VENDORS ══════ -->
+<div class="section" id="vendors">
+  <h2>Strengths &amp; Gaps by Platform</h2>
+  <p class="subtitle">Platform-level assessment of competitive positioning across all six platforms</p>
+  <div class="legend" style="margin-bottom:20px;">
+    <span><span class="swatch" style="background:#c6f6d5;"></span> Strength — key competitive advantage</span>
+    <span><span class="swatch" style="background:#fed7d7;"></span> Gap — significant shortcoming or missing capability</span>
+    <span><span class="swatch" style="background:#e2e8f0;"></span> Note — softer consideration or emerging area</span>
+  </div>
+  <div class="cards" style="grid-template-columns:1fr;">
+
+    <div class="card"><h3>Microsoft Azure</h3>
+      <table class="sc-table"><thead><tr><th style="width:50%;">Strengths</th><th>Gaps / Considerations</th></tr></thead><tbody>
+        <tr><td><span class="badge-s">1</span> <strong>Only complete vertical stack</strong> — full integration across all 5 layers</td><td><span class="badge-n">1</span> <strong>Adoption curve</strong> — full-stack breadth benefits from phased rollout</td></tr>
+        <tr><td><span class="badge-s">2</span> <strong>Tripartite context engineering</strong> — Work IQ + Fabric IQ + Foundry IQ is unique</td><td><span class="badge-n">2</span> <strong>Brand consolidation</strong> — recent rebranding (Foundry) is still settling in</td></tr>
+        <tr><td><span class="badge-s">3</span> <strong>Dual governance</strong> — Agent 365 + Purview addresses shadow AI proliferation</td><td><span class="badge-n">3</span> <strong>Deep integration trade-off</strong> — full-stack cohesion favors committed adoption</td></tr>
+        <tr><td><span class="badge-s">4</span> <strong>20M+ Power BI models</strong> bootstrap Fabric IQ ontology at massive scale</td><td><span class="badge-n">4</span> <strong>Enterprise-grade investment</strong> — pricing reflects breadth of included capabilities</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="card"><h3>Salesforce</h3>
+      <table class="sc-table"><thead><tr><th style="width:50%;">Strengths</th><th>Gaps / Considerations</th></tr></thead><tbody>
+        <tr><td><span class="badge-s">1</span> <strong>CRM-native AI</strong> — Agentforce deeply embedded for grounded CRM actions</td><td><span class="badge-c">1</span> <strong>CRM-centric scope</strong> — less versatile outside Salesforce ecosystem</td></tr>
+        <tr><td><span class="badge-s">2</span> <strong>Zero-copy architecture</strong> — Data 360 eliminates ETL fragility</td><td><span class="badge-n">2</span> <strong>Integrated governance model</strong> — Data 360 Governance (GA Sept 2025) is capable but less prominent than standalone alternatives like Purview or Unity Catalog</td></tr>
+        <tr><td><span class="badge-s">3</span> <strong>Golden Record identity resolution</strong> — epistemically sound data</td><td><span class="badge-n">3</span> <strong>Terminology confusion</strong> — Data Cloud → Data 360, Genie (obsolete)</td></tr>
+        <tr><td><span class="badge-s">4</span> <strong>DevOps</strong> — Data Kits, metadata-only sandboxes for safe testing</td><td><span class="badge-n">4</span> <strong>Original benchmark left L4, L2, and Gov blank</strong></td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="card"><h3>Databricks</h3>
+      <table class="sc-table"><thead><tr><th style="width:50%;">Strengths</th><th>Gaps / Considerations</th></tr></thead><tbody>
+        <tr><td><span class="badge-s">1</span> <strong>Most accurate benchmark column</strong> — successful operationalization</td><td><span class="badge-n">1</span> <strong>Lakebase is newer</strong> — GA February 2026, still maturing at scale</td></tr>
+        <tr><td><span class="badge-s">2</span> <strong>Lakebase solves staleness</strong> — bridges analytical + operational</td><td><span class="badge-n">2</span> <strong>No native CRM</strong> — relies on integrations for customer data</td></tr>
+        <tr><td><span class="badge-s">3</span> <strong>Agent Bricks auto-optimization</strong> — MLflow 3 + TAO</td><td><span class="badge-n">3</span> <strong>Data-first</strong> — strongest for data teams, less intuitive for analysts</td></tr>
+        <tr><td><span class="badge-s">4</span> <strong>Partner data sovereignty</strong> — contractual restrictions on prompts</td><td><span class="badge-n">4</span> <strong>AI Gateway features still expanding</strong></td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="card"><h3>Snowflake</h3>
+      <table class="sc-table"><thead><tr><th style="width:50%;">Strengths</th><th>Gaps / Considerations</th></tr></thead><tbody>
+        <tr><td><span class="badge-s">1</span> <strong>Rapid AI adoption</strong> — 9,100+ AI-active accounts, AI drives 50% of bookings</td><td><span class="badge-n">1</span> <strong>Operational DB is new</strong> — Snowflake Postgres GA Feb 2026, still proving at scale</td></tr>
+        <tr><td><span class="badge-s">2</span> <strong>$200M OpenAI partnership</strong> — GPT-5.2 natively within Snowflake</td><td><span class="badge-n">2</span> <strong>Agent ecosystem is newer</strong> — Cortex Agents GA only Nov 2025</td></tr>
+        <tr><td><span class="badge-s">3</span> <strong>Cortex Code</strong> — AI coding agent with enterprise data context</td><td><span class="badge-n">3</span> <strong>Consumption-based pricing uncertainty</strong> for AI workloads</td></tr>
+        <tr><td><span class="badge-s">4</span> <strong>Horizon Catalog</strong> — built-in governance with Iceberg interop + Copilot</td><td><span class="badge-n">4</span> <strong>Multi-agent orchestration</strong> less mature vs. Microsoft/Databricks</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="card"><h3>Google Cloud (GCP)</h3>
+      <table class="sc-table"><thead><tr><th style="width:50%;">Strengths</th><th>Gaps / Considerations</th></tr></thead><tbody>
+        <tr><td><span class="badge-s">1</span> <strong>Cost optimization leadership</strong> — Gemini Context Caching and Batch API dramatically reduce serving costs</td><td><span class="badge-c">1</span> <strong>Governance perception</strong> — Dataplex entirely omitted from benchmarks</td></tr>
+        <tr><td><span class="badge-s">2</span> <strong>BigQuery dominance</strong> — undisputed analytical powerhouse at L2</td><td><span class="badge-c">2</span> <strong>L3 gap in visibility</strong> — Vertex AI Vector Search also omitted</td></tr>
+        <tr><td><span class="badge-s">3</span> <strong>Dataplex data mesh</strong> — zones, BigLake, AI-driven lineage</td><td><span class="badge-n">3</span> <strong>"GEMINI Vertex" conflation</strong> — inaccurate portmanteau hurts positioning</td></tr>
+        <tr><td><span class="badge-s">4</span> <strong>Real-world proven</strong> — Inspira (legal), Triplebar (biotech)</td><td><span class="badge-n">4</span> <strong>Under-marketed</strong> — capabilities undermined by benchmark inaccuracy</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="card"><h3>AWS</h3>
+      <table class="sc-table"><thead><tr><th style="width:50%;">Strengths</th><th>Gaps / Considerations</th></tr></thead><tbody>
+        <tr><td><span class="badge-s">1</span> <strong>Framework-agnostic</strong> — AgentCore supports any framework, model, or tool</td><td><span class="badge-n">1</span> <strong>No unified "IQ" context layer</strong> — Knowledge Bases are powerful but modular</td></tr>
+        <tr><td><span class="badge-s">2</span> <strong>13 built-in agent evaluators</strong> — most comprehensive evaluation suite</td><td><span class="badge-n">2</span> <strong>Fragmented services</strong> — Bedrock, SageMaker, DataZone, Lake Formation overlap</td></tr>
+        <tr><td><span class="badge-s">3</span> <strong>S3 Vectors</strong> — cost-optimized vector storage natively on S3</td><td><span class="badge-n">3</span> <strong>Enterprise governance story</strong> — DataZone less prominent vs. Purview/Unity</td></tr>
+        <tr><td><span class="badge-s">4</span> <strong>Battle-tested infra</strong> — Aurora/DynamoDB at scale, largest cloud provider</td><td><span class="badge-n">4</span> <strong>Agent orchestration identity</strong> — less opinionated about agent lifecycle</td></tr>
+      </tbody></table>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ TAKEAWAYS ══════ -->
+<div class="section" id="takeaways">
+  <h2>Strategic Recommendations</h2>
+  <p class="subtitle">The 2026 enterprise AI landscape has matured from experimental interfaces to rigorously governed autonomous agentic workflows</p>
+  <div class="cards" style="grid-template-columns:1fr;">
+    <div class="card">
+      <h3 style="font-size:16px;">Summary Assessment</h3>
+      <table class="sc-table">
+        <thead><tr><th style="width:160px;">Platform</th><th>Leads On</th><th>Key Advantage</th><th>Key Consideration</th></tr></thead>
+        <tbody>
+          <tr style="background:#f0fff4;"><td><strong>Microsoft Azure</strong></td><td><strong>FULL-STACK VISION</strong></td><td>Most consolidated full-stack offering; tripartite context + dual governance</td><td>Breadth rewards committed adoption</td></tr>
+          <tr><td><strong>Databricks</strong></td><td><strong>OPERATIONALIZATION</strong></td><td>Bridging analytical lakes with real-time AI via Lakebase + Agent Bricks</td><td>No native CRM; newer products</td></tr>
+          <tr><td><strong>Salesforce</strong></td><td><strong>CRM-NATIVE AI</strong></td><td>Agentforce + Data 360 zero-copy + Golden Record grounding</td><td>Governance less prominent than standalone alternatives</td></tr>
+          <tr><td><strong>Snowflake</strong></td><td><strong>DATA PLATFORM AI</strong></td><td>Cortex suite; 50% of bookings AI-driven</td><td>Agent/operational DB still maturing</td></tr>
+          <tr><td><strong>Google Cloud</strong></td><td><strong>COST EFFICIENCY</strong></td><td>Gemini cost optimization + BigQuery + Dataplex data mesh</td><td>Perception gap from benchmark omissions</td></tr>
+          <tr><td><strong>AWS</strong></td><td><strong>INFRASTRUCTURE BREADTH</strong></td><td>Framework-agnostic AgentCore + battle-tested DBs + S3 Vectors</td><td>Fragmented service landscape</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Tab navigation
+  document.querySelectorAll('.nav button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Accordion
+  document.querySelectorAll('.acc-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const item = header.parentElement;
+      item.classList.toggle('open');
+    });
+  });
+</script>
+</body>
+</html>
