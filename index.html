@@ -59,8 +59,8 @@
   .card .ml { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #a0aec0; font-weight: 700; }
   .card .mv { font-size: 13px; font-weight: 600; color: #2d3748; }
 
-  .badge-s { display: inline-block; background: #c6f6d5; color: #276749; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-right: 4px; }
-  .badge-c { display: inline-block; background: #fed7d7; color: #9b2c2c; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-right: 4px; }
+  .badge-s { display: inline-block; background: #a8c7de; color: #1a3a5c; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-right: 4px; }
+  .badge-c { display: inline-block; background: #e2e8f0; color: #4a5568; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-right: 4px; }
   .badge-n { display: inline-block; background: #e2e8f0; color: #4a5568; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-right: 4px; }
 
   .sc-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
@@ -182,7 +182,7 @@
   <button data-tab="detailed">Detailed Assessment</button>
   <button data-tab="bic">Best-in-Class</button>
 
-  <button data-tab="vendors">Strengths / Gaps</button>
+  <button data-tab="vendors">Strengths / Considerations</button>
   <button data-tab="takeaways">Key Takeaways</button>
 </div>
 
@@ -526,17 +526,16 @@
 
 <!-- ══════ VENDORS ══════ -->
 <div class="section" id="vendors">
-  <h2>Strengths &amp; Gaps by Platform</h2>
+  <h2>Strengths &amp; Considerations by Platform</h2>
   <p class="subtitle">Platform-level assessment of competitive positioning across all six platforms</p>
   <div class="legend" style="margin-bottom:20px;">
-    <span><span class="swatch" style="background:#c6f6d5;"></span> Strength — key competitive advantage</span>
-    <span><span class="swatch" style="background:#fed7d7;"></span> Gap — significant shortcoming or missing capability</span>
-    <span><span class="swatch" style="background:#e2e8f0;"></span> Note — softer consideration or emerging area</span>
+    <span><span class="swatch" style="background:#a8c7de;"></span> Strength — key competitive advantage</span>
+    <span><span class="swatch" style="background:#e2e8f0;"></span> Consideration — emerging area or trade-off</span>
   </div>
   <div class="cards" style="grid-template-columns:1fr;">
 
     <div class="card"><h3>Microsoft Azure</h3>
-      <table class="sc-table"><thead><tr><th style="width:50%;">Strengths</th><th>Gaps / Considerations</th></tr></thead><tbody>
+      <table class="sc-table"><thead><tr><th style="width:50%;">Strengths</th><th>Considerations</th></tr></thead><tbody>
         <tr><td><span class="badge-s">1</span> <strong>Only complete vertical stack</strong> — full integration across all 5 layers</td><td><span class="badge-n">1</span> <strong>Adoption curve</strong> — full-stack breadth benefits from phased rollout</td></tr>
         <tr><td><span class="badge-s">2</span> <strong>Tripartite context engineering</strong> — Work IQ + Fabric IQ + Foundry IQ is unique</td><td><span class="badge-n">2</span> <strong>Brand consolidation</strong> — recent rebranding (Foundry) is still settling in</td></tr>
         <tr><td><span class="badge-s">3</span> <strong>Dual governance</strong> — Agent 365 + Purview addresses shadow AI proliferation</td><td><span class="badge-n">3</span> <strong>Deep integration trade-off</strong> — full-stack cohesion favors committed adoption</td></tr>
@@ -545,8 +544,8 @@
     </div>
 
     <div class="card"><h3>Salesforce</h3>
-      <table class="sc-table"><thead><tr><th style="width:50%;">Strengths</th><th>Gaps / Considerations</th></tr></thead><tbody>
-        <tr><td><span class="badge-s">1</span> <strong>CRM-native AI</strong> — Agentforce deeply embedded for grounded CRM actions</td><td><span class="badge-c">1</span> <strong>CRM-centric scope</strong> — less versatile outside Salesforce ecosystem</td></tr>
+      <table class="sc-table"><thead><tr><th style="width:50%;">Strengths</th><th>Considerations</th></tr></thead><tbody>
+        <tr><td><span class="badge-s">1</span> <strong>CRM-native AI</strong> — Agentforce deeply embedded for grounded CRM actions</td><td><span class="badge-n">1</span> <strong>CRM-centric scope</strong> — less versatile outside Salesforce ecosystem</td></tr>
         <tr><td><span class="badge-s">2</span> <strong>Zero-copy architecture</strong> — Data 360 eliminates ETL fragility</td><td><span class="badge-n">2</span> <strong>Integrated governance model</strong> — Data 360 Governance (GA Sept 2025) is capable but less prominent than standalone alternatives like Purview or Unity Catalog</td></tr>
         <tr><td><span class="badge-s">3</span> <strong>Golden Record identity resolution</strong> — epistemically sound data</td><td><span class="badge-n">3</span> <strong>Terminology confusion</strong> — Data Cloud → Data 360, Genie (obsolete)</td></tr>
         <tr><td><span class="badge-s">4</span> <strong>DevOps</strong> — Data Kits, metadata-only sandboxes for safe testing</td><td><span class="badge-n">4</span> <strong>Original benchmark left L4, L2, and Gov blank</strong></td></tr>
@@ -554,7 +553,7 @@
     </div>
 
     <div class="card"><h3>Databricks</h3>
-      <table class="sc-table"><thead><tr><th style="width:50%;">Strengths</th><th>Gaps / Considerations</th></tr></thead><tbody>
+      <table class="sc-table"><thead><tr><th style="width:50%;">Strengths</th><th>Considerations</th></tr></thead><tbody>
         <tr><td><span class="badge-s">1</span> <strong>Most accurate benchmark column</strong> — successful operationalization</td><td><span class="badge-n">1</span> <strong>Lakebase is newer</strong> — GA February 2026, still maturing at scale</td></tr>
         <tr><td><span class="badge-s">2</span> <strong>Lakebase solves staleness</strong> — bridges analytical + operational</td><td><span class="badge-n">2</span> <strong>No native CRM</strong> — relies on integrations for customer data</td></tr>
         <tr><td><span class="badge-s">3</span> <strong>Agent Bricks auto-optimization</strong> — MLflow 3 + TAO</td><td><span class="badge-n">3</span> <strong>Data-first</strong> — strongest for data teams, less intuitive for analysts</td></tr>
@@ -563,7 +562,7 @@
     </div>
 
     <div class="card"><h3>Snowflake</h3>
-      <table class="sc-table"><thead><tr><th style="width:50%;">Strengths</th><th>Gaps / Considerations</th></tr></thead><tbody>
+      <table class="sc-table"><thead><tr><th style="width:50%;">Strengths</th><th>Considerations</th></tr></thead><tbody>
         <tr><td><span class="badge-s">1</span> <strong>Rapid AI adoption</strong> — 9,100+ AI-active accounts, AI drives 50% of bookings</td><td><span class="badge-n">1</span> <strong>Operational DB is new</strong> — Snowflake Postgres GA Feb 2026, still proving at scale</td></tr>
         <tr><td><span class="badge-s">2</span> <strong>$200M OpenAI partnership</strong> — GPT-5.2 natively within Snowflake</td><td><span class="badge-n">2</span> <strong>Agent ecosystem is newer</strong> — Cortex Agents GA only Nov 2025</td></tr>
         <tr><td><span class="badge-s">3</span> <strong>Cortex Code</strong> — AI coding agent with enterprise data context</td><td><span class="badge-n">3</span> <strong>Consumption-based pricing uncertainty</strong> for AI workloads</td></tr>
@@ -572,16 +571,16 @@
     </div>
 
     <div class="card"><h3>Google Cloud (GCP)</h3>
-      <table class="sc-table"><thead><tr><th style="width:50%;">Strengths</th><th>Gaps / Considerations</th></tr></thead><tbody>
-        <tr><td><span class="badge-s">1</span> <strong>Cost optimization leadership</strong> — Gemini Context Caching and Batch API dramatically reduce serving costs</td><td><span class="badge-c">1</span> <strong>Governance perception</strong> — Dataplex entirely omitted from benchmarks</td></tr>
-        <tr><td><span class="badge-s">2</span> <strong>BigQuery dominance</strong> — undisputed analytical powerhouse at L2</td><td><span class="badge-c">2</span> <strong>L3 gap in visibility</strong> — Vertex AI Vector Search also omitted</td></tr>
+      <table class="sc-table"><thead><tr><th style="width:50%;">Strengths</th><th>Considerations</th></tr></thead><tbody>
+        <tr><td><span class="badge-s">1</span> <strong>Cost optimization leadership</strong> — Gemini Context Caching and Batch API dramatically reduce serving costs</td><td><span class="badge-n">1</span> <strong>Governance under-marketed</strong> — Dataplex is capable but often overlooked in benchmarks</td></tr>
+        <tr><td><span class="badge-s">2</span> <strong>BigQuery dominance</strong> — undisputed analytical powerhouse at L2</td><td><span class="badge-n">2</span> <strong>L3 visibility gap</strong> — the product is good, the marketing and mindshare haven't caught up</td></tr>
         <tr><td><span class="badge-s">3</span> <strong>Dataplex data mesh</strong> — zones, BigLake, AI-driven lineage</td><td><span class="badge-n">3</span> <strong>"GEMINI Vertex" conflation</strong> — inaccurate portmanteau hurts positioning</td></tr>
         <tr><td><span class="badge-s">4</span> <strong>Real-world proven</strong> — Inspira (legal), Triplebar (biotech)</td><td><span class="badge-n">4</span> <strong>Under-marketed</strong> — capabilities undermined by benchmark inaccuracy</td></tr>
       </tbody></table>
     </div>
 
     <div class="card"><h3>AWS</h3>
-      <table class="sc-table"><thead><tr><th style="width:50%;">Strengths</th><th>Gaps / Considerations</th></tr></thead><tbody>
+      <table class="sc-table"><thead><tr><th style="width:50%;">Strengths</th><th>Considerations</th></tr></thead><tbody>
         <tr><td><span class="badge-s">1</span> <strong>Framework-agnostic</strong> — AgentCore supports any framework, model, or tool</td><td><span class="badge-n">1</span> <strong>No unified "IQ" context layer</strong> — Knowledge Bases are powerful but modular</td></tr>
         <tr><td><span class="badge-s">2</span> <strong>13 built-in agent evaluators</strong> — most comprehensive evaluation suite</td><td><span class="badge-n">2</span> <strong>Fragmented services</strong> — Bedrock, SageMaker, DataZone, Lake Formation overlap</td></tr>
         <tr><td><span class="badge-s">3</span> <strong>S3 Vectors</strong> — cost-optimized vector storage natively on S3</td><td><span class="badge-n">3</span> <strong>Enterprise governance story</strong> — DataZone less prominent vs. Purview/Unity</td></tr>
