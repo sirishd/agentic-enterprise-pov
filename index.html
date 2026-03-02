@@ -183,6 +183,7 @@
   <button data-tab="bic">Best-in-Class</button>
 
   <button data-tab="vendors">Strengths / Considerations</button>
+  <button data-tab="bdm">BDM Considerations</button>
   <button data-tab="takeaways">Key Takeaways</button>
 </div>
 
@@ -586,6 +587,97 @@
         <tr><td><span class="badge-s">3</span> <strong>S3 Vectors</strong> — cost-optimized vector storage natively on S3</td><td><span class="badge-n">3</span> <strong>Enterprise governance story</strong> — DataZone less prominent vs. Purview/Unity</td></tr>
         <tr><td><span class="badge-s">4</span> <strong>Battle-tested infra</strong> — Aurora/DynamoDB at scale, largest cloud provider</td><td><span class="badge-n">4</span> <strong>Agent orchestration identity</strong> — less opinionated about agent lifecycle</td></tr>
       </tbody></table>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ BDM TAKEAWAYS ══════ -->
+<div class="section" id="bdm">
+  <h2>Decision Criteria That Matter</h2>
+  <p class="subtitle">Cross-cutting decision lenses for business decision makers evaluating the agentic enterprise landscape</p>
+
+  <div class="cards" style="grid-template-columns:1fr; gap:20px;">
+
+    <!-- 1. Time-to-Value -->
+    <div class="card" style="border-left:4px solid #2b6cb0;">
+      <h3 style="font-size:16px;">1. Time-to-Value</h3>
+      <p style="font-size:13.5px; color:#4a5568; margin:4px 0 14px; font-style:italic;">How quickly can you move from pilot to production-grade agentic workflows?</p>
+      <table style="width:100%; border-collapse:collapse; font-size:13px;">
+        <tr style="background:#edf2f7;"><td style="padding:8px 12px; font-weight:700; width:180px; color:#2b6cb0;">Key Insight</td><td style="padding:8px 12px;">Embedded agents ship faster; framework-first platforms scale better long-term</td></tr>
+        <tr><td style="padding:8px 12px; font-weight:600; color:#718096; border-bottom:1px solid #edf2f7;">Fastest to Deploy</td><td style="padding:8px 12px; border-bottom:1px solid #edf2f7;"><strong>Salesforce</strong> (Agentforce in-CRM) · <strong>Azure</strong> (Copilot across M365)</td></tr>
+        <tr><td style="padding:8px 12px; font-weight:600; color:#718096; border-bottom:1px solid #edf2f7;">Most Architectural Control</td><td style="padding:8px 12px; border-bottom:1px solid #edf2f7;"><strong>Databricks</strong> (Agent Bricks + MLflow) · <strong>AWS</strong> (AgentCore)</td></tr>
+        <tr><td style="padding:8px 12px; font-weight:600; color:#718096; border-bottom:1px solid #edf2f7;">Balanced</td><td style="padding:8px 12px; border-bottom:1px solid #edf2f7;"><strong>Snowflake</strong> (Cortex Agents) · <strong>GCP</strong> (Vertex AI Agent Builder)</td></tr>
+      </table>
+      <p style="font-size:12.5px; color:#2b6cb0; margin-top:12px; font-weight:600;">→ Ask: Are you optimizing for speed of first deployment or long-term architectural flexibility?</p>
+      <div style="background:#f0fff4; border:1px solid #c6f6d5; border-radius:6px; padding:8px 14px; margin-top:10px; font-size:12.5px;">
+        <strong style="color:#276749;">Azure Advantage:</strong> <span style="color:#2d3748;">Uniquely offers both — Copilot Studio for rapid low-code deployment <em>and</em> Foundry SDK for pro-code architectural control, within a single platform.</span>
+      </div>
+    </div>
+
+    <!-- 2. Total Cost of Ownership -->
+    <div class="card" style="border-left:4px solid #2b6cb0;">
+      <h3 style="font-size:16px;">2. Total Cost of Ownership</h3>
+      <p style="font-size:13.5px; color:#4a5568; margin:4px 0 14px; font-style:italic;">Beyond licensing — what does the full operational cost picture look like?</p>
+      <table style="width:100%; border-collapse:collapse; font-size:13px;">
+        <tr style="background:#edf2f7;"><td style="padding:8px 12px; font-weight:700; width:180px; color:#2b6cb0;">Key Insight</td><td style="padding:8px 12px;">Licensing is the starting point — integration tax, inference costs, and staffing are the real differentiators</td></tr>
+        <tr><td style="padding:8px 12px; font-weight:600; color:#718096; border-bottom:1px solid #edf2f7;">Integration Overhead</td><td style="padding:8px 12px; border-bottom:1px solid #edf2f7;"><strong>Azure</strong> consolidates across stack · <strong>AWS</strong> requires more stitching across services</td></tr>
+        <tr><td style="padding:8px 12px; font-weight:600; color:#718096; border-bottom:1px solid #edf2f7;">Inference Economics</td><td style="padding:8px 12px; border-bottom:1px solid #edf2f7;"><strong>GCP</strong> leads with context caching + batch APIs · <strong>Snowflake</strong> consumption-based (less predictable)</td></tr>
+        <tr><td style="padding:8px 12px; font-weight:600; color:#718096; border-bottom:1px solid #edf2f7;">Operational Staffing</td><td style="padding:8px 12px; border-bottom:1px solid #edf2f7;">Turnkey (<strong>Salesforce</strong>, <strong>Azure</strong>) reduces headcount · Framework-first (<strong>Databricks</strong>, <strong>AWS</strong>) needs dedicated engineering</td></tr>
+      </table>
+      <p style="font-size:12.5px; color:#2b6cb0; margin-top:12px; font-weight:600;">→ Ask: What is your true cost — licensing + integration + inference + staffing combined?</p>
+      <div style="background:#f0fff4; border:1px solid #c6f6d5; border-radius:6px; padding:8px 14px; margin-top:10px; font-size:12.5px;">
+        <strong style="color:#276749;">Azure Advantage:</strong> <span style="color:#2d3748;">Lowest integration tax — a single consolidated stack (Azure Databases + Fabric + Foundry + Purview) eliminates the multi-vendor stitching cost that inflates TCO on modular approaches.</span>
+      </div>
+    </div>
+
+    <!-- 3. Ecosystem Lock-in vs. Flexibility -->
+    <div class="card" style="border-left:4px solid #2b6cb0;">
+      <h3 style="font-size:16px;">3. Ecosystem Lock-in vs. Flexibility</h3>
+      <p style="font-size:13.5px; color:#4a5568; margin:4px 0 14px; font-style:italic;">How much optionality do you need — and how much are you willing to trade for depth?</p>
+      <table style="width:100%; border-collapse:collapse; font-size:13px;">
+        <tr style="background:#edf2f7;"><td style="padding:8px 12px; font-weight:700; width:180px; color:#2b6cb0;">Key Insight</td><td style="padding:8px 12px;">Deep-stack platforms reward commitment; open platforms preserve optionality — match to your cloud strategy</td></tr>
+        <tr><td style="padding:8px 12px; font-weight:600; color:#718096; border-bottom:1px solid #edf2f7;">Deep Integration</td><td style="padding:8px 12px; border-bottom:1px solid #edf2f7;"><strong>Azure</strong> (Azure Databases + unified stack + governance) · <strong>Salesforce</strong> (CRM-native depth)</td></tr>
+        <tr><td style="padding:8px 12px; font-weight:600; color:#718096; border-bottom:1px solid #edf2f7;">Open / Modular</td><td style="padding:8px 12px; border-bottom:1px solid #edf2f7;"><strong>Databricks</strong> (open-source foundations) · <strong>AWS</strong> (framework-agnostic AgentCore)</td></tr>
+        <tr><td style="padding:8px 12px; font-weight:600; color:#718096; border-bottom:1px solid #edf2f7;">Balanced Interop</td><td style="padding:8px 12px; border-bottom:1px solid #edf2f7;"><strong>Snowflake</strong> (Iceberg-native) · <strong>GCP</strong> (BigLake cross-cloud)</td></tr>
+      </table>
+      <p style="font-size:12.5px; color:#2b6cb0; margin-top:12px; font-weight:600;">→ Ask: Does your organization's cloud strategy favor committed depth or multi-vendor optionality?</p>
+      <div style="background:#f0fff4; border:1px solid #c6f6d5; border-radius:6px; padding:8px 14px; margin-top:10px; font-size:12.5px;">
+        <strong style="color:#276749;">Azure Advantage:</strong> <span style="color:#2d3748;">Deepest vertical integration across all 5 layers — Azure Databases (SQL, Cosmos DB, PostgreSQL) at L1 feed directly into Fabric at L2 and Foundry at L4. Multi-cloud ingestion (S3, GCS, BigQuery) means commitment doesn't mean abandoning existing cloud investments.</span>
+      </div>
+    </div>
+
+    <!-- 4. Governance Readiness -->
+    <div class="card" style="border-left:4px solid #2b6cb0;">
+      <h3 style="font-size:16px;">4. Governance Readiness</h3>
+      <p style="font-size:13.5px; color:#4a5568; margin:4px 0 14px; font-style:italic;">Can the platform govern autonomous agents — not just data?</p>
+      <table style="width:100%; border-collapse:collapse; font-size:13px;">
+        <tr style="background:#edf2f7;"><td style="padding:8px 12px; font-weight:700; width:180px; color:#2b6cb0;">Key Insight</td><td style="padding:8px 12px;">Agentic AI needs guardrails for agent behavior, data access, and model lineage — as a unified surface</td></tr>
+        <tr><td style="padding:8px 12px; font-weight:600; color:#718096; border-bottom:1px solid #edf2f7;">Most Comprehensive</td><td style="padding:8px 12px; border-bottom:1px solid #edf2f7;"><strong>Azure</strong> — dual governance (Agent 365 + Purview) covers agents and data</td></tr>
+        <tr><td style="padding:8px 12px; font-weight:600; color:#718096; border-bottom:1px solid #edf2f7;">Data-Layer Leader</td><td style="padding:8px 12px; border-bottom:1px solid #edf2f7;"><strong>Databricks</strong> — Unity Catalog is the gold standard for data governance</td></tr>
+        <tr><td style="padding:8px 12px; font-weight:600; color:#718096; border-bottom:1px solid #edf2f7;">Capable, Maturing</td><td style="padding:8px 12px; border-bottom:1px solid #edf2f7;"><strong>Snowflake</strong> (Horizon Catalog) · <strong>GCP</strong> (Dataplex) · <strong>AWS</strong> (DataZone)</td></tr>
+      </table>
+      <p style="font-size:12.5px; color:#2b6cb0; margin-top:12px; font-weight:600;">→ Ask: Does the platform govern agent behavior, data access, and model lineage as one surface — or separate tools?</p>
+      <div style="background:#f0fff4; border:1px solid #c6f6d5; border-radius:6px; padding:8px 14px; margin-top:10px; font-size:12.5px;">
+        <strong style="color:#276749;">Azure Advantage:</strong> <span style="color:#2d3748;">Only platform with dual governance — Agent 365 for agent identity/lifecycle and Purview for data payload — treating agent behavior and data access as a unified but appropriately separated surface.</span>
+      </div>
+    </div>
+
+    <!-- 5. Data Foundation Fit -->
+    <div class="card" style="border-left:4px solid #2b6cb0;">
+      <h3 style="font-size:16px;">5. Data Foundation Fit</h3>
+      <p style="font-size:13.5px; color:#4a5568; margin:4px 0 14px; font-style:italic;">Does the platform match your existing data estate — or require you to rebuild it?</p>
+      <table style="width:100%; border-collapse:collapse; font-size:13px;">
+        <tr style="background:#edf2f7;"><td style="padding:8px 12px; font-weight:700; width:180px; color:#2b6cb0;">Key Insight</td><td style="padding:8px 12px;">Start from your data gravity — the platform closest to your existing estate delivers the fastest agentic outcomes</td></tr>
+        <tr><td style="padding:8px 12px; font-weight:600; color:#718096; border-bottom:1px solid #edf2f7;">CRM-Heavy</td><td style="padding:8px 12px; border-bottom:1px solid #edf2f7;"><strong>Salesforce</strong> — Data 360 zero-copy leverages existing CRM investments</td></tr>
+        <tr><td style="padding:8px 12px; font-weight:600; color:#718096; border-bottom:1px solid #edf2f7;">Analytical Lakes</td><td style="padding:8px 12px; border-bottom:1px solid #edf2f7;"><strong>Databricks</strong> (lakehouse-native) · <strong>Snowflake</strong> (warehouse + Iceberg)</td></tr>
+        <tr><td style="padding:8px 12px; font-weight:600; color:#718096; border-bottom:1px solid #edf2f7;">Microsoft / Azure Databases</td><td style="padding:8px 12px; border-bottom:1px solid #edf2f7;"><strong>Azure</strong> — Azure Databases (SQL, Cosmos DB, PostgreSQL) at L1 + Fabric IQ bootstraps context from 20M+ Power BI models</td></tr>
+        <tr><td style="padding:8px 12px; font-weight:600; color:#718096; border-bottom:1px solid #edf2f7;">BigQuery-Centric</td><td style="padding:8px 12px; border-bottom:1px solid #edf2f7;"><strong>GCP</strong> — BigQuery + Dataplex already serve as the analytical backbone</td></tr>
+      </table>
+      <p style="font-size:12.5px; color:#2b6cb0; margin-top:12px; font-weight:600;">→ Ask: Where does your data gravity sit today — and which platform connects to it most naturally?</p>
+      <div style="background:#f0fff4; border:1px solid #c6f6d5; border-radius:6px; padding:8px 14px; margin-top:10px; font-size:12.5px;">
+        <strong style="color:#276749;">Azure Advantage:</strong> <span style="color:#2d3748;">Azure Databases (SQL, Cosmos DB, PostgreSQL) provide the operational foundation, while Fabric IQ bootstraps context from 20M+ existing Power BI models — the largest pre-built semantic layer in the market. Organizations with Microsoft data estates get immediate agentic grounding.</span>
+      </div>
     </div>
 
   </div>
