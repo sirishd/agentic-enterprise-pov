@@ -17,6 +17,18 @@
   .nav button { background: none; border: none; padding: 14px 18px; font-size: 13.5px; font-weight: 600; color: #718096; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap; }
   .nav button:hover { color: #2b6cb0; }
   .nav button.active { color: #2b6cb0; border-bottom-color: #2b6cb0; }
+  /* BDM navigation tiles */
+  .bdm-tile { text-decoration:none; background:#fff; border:1px solid #e2e8f0; border-top:3px solid #cbd5e0; border-radius:8px; padding:14px 16px; cursor:pointer; transition:all 0.25s; }
+  .bdm-tile:hover { box-shadow:0 4px 12px rgba(43,108,176,0.15); border-top-color:#2b6cb0; transform:translateY(-2px); }
+  .bdm-tile-active { border-top-color:#1a365d !important; background:linear-gradient(180deg, #ebf4ff 0%, #fff 100%); box-shadow:0 2px 8px rgba(26,54,93,0.12); }
+  .bdm-tile-icon { font-size:22px; margin-bottom:6px; }
+  .bdm-tile-label { font-size:13px; font-weight:700; color:#1a365d; line-height:1.3; }
+  .bdm-tile-sub { font-size:11px; color:#718096; margin-top:4px; line-height:1.4; }
+  .bdm-card-hidden { display:none !important; }
+
+  .nav button.bdm-highlight { background: linear-gradient(135deg, #2b6cb0, #1a365d); color: #fff; border-radius: 6px; margin: 6px 4px; padding: 10px 18px; border-bottom: none; }
+  .nav button.bdm-highlight:hover { background: linear-gradient(135deg, #3182ce, #2b6cb0); color: #fff; }
+  .nav button.bdm-highlight.active { background: linear-gradient(135deg, #1a365d, #0f2440); color: #fff; border-bottom: none; }
 
   .section { display: none; padding: 32px 40px 48px; max-width: 1400px; margin: 0 auto; overflow: visible; }
   .section.active { display: block; }
@@ -183,7 +195,7 @@
   <button data-tab="bic">Best-in-Class</button>
 
   <button data-tab="vendors">Strengths / Considerations</button>
-  <button data-tab="bdm">BDM Considerations</button>
+  <button data-tab="bdm" class="bdm-highlight">BDM Considerations</button>
   <button data-tab="takeaways">Key Takeaways</button>
 </div>
 
@@ -597,10 +609,45 @@
   <h2>Decision Criteria That Matter</h2>
   <p class="subtitle">Cross-cutting decision lenses for business decision makers evaluating the agentic enterprise landscape</p>
 
+  <!-- Navigation Tiles -->
+  <div id="bdm-nav" style="display:grid; grid-template-columns:repeat(5, 1fr); gap:12px; margin-bottom:28px;">
+    <div class="bdm-tile bdm-tile-active" data-target="bdm-ttv" onclick="bdmFilter('bdm-ttv',this)">
+      <div class="bdm-tile-icon">⏱</div>
+      <div class="bdm-tile-label">1. Time-to-Value</div>
+      <div class="bdm-tile-sub">Pilot → production speed</div>
+    </div>
+    <div class="bdm-tile" data-target="bdm-tco" onclick="bdmFilter('bdm-tco',this)">
+      <div class="bdm-tile-icon">💰</div>
+      <div class="bdm-tile-label">2. Total Cost of Ownership</div>
+      <div class="bdm-tile-sub">Full operational cost picture</div>
+    </div>
+    <div class="bdm-tile" data-target="bdm-lockin" onclick="bdmFilter('bdm-lockin',this)">
+      <div class="bdm-tile-icon">🔓</div>
+      <div class="bdm-tile-label">3. Lock-in vs. Flexibility</div>
+      <div class="bdm-tile-sub">Optionality vs. depth trade-off</div>
+    </div>
+    <div class="bdm-tile" data-target="bdm-gov" onclick="bdmFilter('bdm-gov',this)">
+      <div class="bdm-tile-icon">🛡️</div>
+      <div class="bdm-tile-label">4. Governance Readiness</div>
+      <div class="bdm-tile-sub">Agent + data guardrails</div>
+    </div>
+    <div class="bdm-tile" data-target="bdm-data" onclick="bdmFilter('bdm-data',this)">
+      <div class="bdm-tile-icon">🗄️</div>
+      <div class="bdm-tile-label">5. Data Foundation Fit</div>
+      <div class="bdm-tile-sub">Match to your data estate</div>
+    </div>
+  </div>
+
+  <div style="text-align:right; margin-bottom:12px;">
+    <a href="#" id="bdm-show-all" onclick="bdmShowAll();return false;" style="font-size:12.5px; color:#2b6cb0; text-decoration:none; font-weight:600; display:inline-flex; align-items:center; gap:4px;" onmouseover="this.style.color='#1a365d'" onmouseout="this.style.color='#2b6cb0'">
+      <span style="font-size:14px;">⊞</span> Show all criteria
+    </a>
+  </div>
+
   <div class="cards" style="grid-template-columns:1fr; gap:20px;">
 
     <!-- 1. Time-to-Value -->
-    <div class="card" style="border-left:4px solid #2b6cb0;">
+    <div class="card" id="bdm-ttv" style="border-left:4px solid #2b6cb0; scroll-margin-top:80px;">
       <h3 style="font-size:16px;">1. Time-to-Value</h3>
       <p style="font-size:13.5px; color:#4a5568; margin:4px 0 14px; font-style:italic;">How quickly can you move from pilot to production-grade agentic workflows?</p>
       <table style="width:100%; border-collapse:collapse; font-size:13px;">
@@ -616,7 +663,7 @@
     </div>
 
     <!-- 2. Total Cost of Ownership -->
-    <div class="card" style="border-left:4px solid #2b6cb0;">
+    <div class="card" id="bdm-tco" style="border-left:4px solid #2b6cb0; scroll-margin-top:80px;">
       <h3 style="font-size:16px;">2. Total Cost of Ownership</h3>
       <p style="font-size:13.5px; color:#4a5568; margin:4px 0 14px; font-style:italic;">Beyond licensing — what does the full operational cost picture look like?</p>
       <table style="width:100%; border-collapse:collapse; font-size:13px;">
@@ -632,7 +679,7 @@
     </div>
 
     <!-- 3. Ecosystem Lock-in vs. Flexibility -->
-    <div class="card" style="border-left:4px solid #2b6cb0;">
+    <div class="card" id="bdm-lockin" style="border-left:4px solid #2b6cb0; scroll-margin-top:80px;">
       <h3 style="font-size:16px;">3. Ecosystem Lock-in vs. Flexibility</h3>
       <p style="font-size:13.5px; color:#4a5568; margin:4px 0 14px; font-style:italic;">How much optionality do you need — and how much are you willing to trade for depth?</p>
       <table style="width:100%; border-collapse:collapse; font-size:13px;">
@@ -648,7 +695,7 @@
     </div>
 
     <!-- 4. Governance Readiness -->
-    <div class="card" style="border-left:4px solid #2b6cb0;">
+    <div class="card" id="bdm-gov" style="border-left:4px solid #2b6cb0; scroll-margin-top:80px;">
       <h3 style="font-size:16px;">4. Governance Readiness</h3>
       <p style="font-size:13.5px; color:#4a5568; margin:4px 0 14px; font-style:italic;">Can the platform govern autonomous agents — not just data?</p>
       <table style="width:100%; border-collapse:collapse; font-size:13px;">
@@ -664,7 +711,7 @@
     </div>
 
     <!-- 5. Data Foundation Fit -->
-    <div class="card" style="border-left:4px solid #2b6cb0;">
+    <div class="card" id="bdm-data" style="border-left:4px solid #2b6cb0; scroll-margin-top:80px;">
       <h3 style="font-size:16px;">5. Data Foundation Fit</h3>
       <p style="font-size:13.5px; color:#4a5568; margin:4px 0 14px; font-style:italic;">Does the platform match your existing data estate — or require you to rebuild it?</p>
       <table style="width:100%; border-collapse:collapse; font-size:13px;">
@@ -723,6 +770,30 @@
       item.classList.toggle('open');
     });
   });
+
+  // BDM tile filter — show only the clicked card
+  const bdmIds = ['bdm-ttv','bdm-tco','bdm-lockin','bdm-gov','bdm-data'];
+  let bdmAllVisible = false;
+
+  function bdmFilter(targetId, tile) {
+    // If in single-select mode and this tile is already active, do nothing
+    if (!bdmAllVisible && tile.classList.contains('bdm-tile-active')) return;
+    bdmAllVisible = false;
+    document.querySelectorAll('.bdm-tile').forEach(t => t.classList.remove('bdm-tile-active'));
+    tile.classList.add('bdm-tile-active');
+    bdmIds.forEach(id => {
+      document.getElementById(id).classList.toggle('bdm-card-hidden', id !== targetId);
+    });
+  }
+
+  function bdmShowAll() {
+    bdmAllVisible = true;
+    document.querySelectorAll('.bdm-tile').forEach(t => t.classList.add('bdm-tile-active'));
+    bdmIds.forEach(id => document.getElementById(id).classList.remove('bdm-card-hidden'));
+  }
+
+  // Initialize: show first card only on load
+  bdmIds.slice(1).forEach(id => document.getElementById(id).classList.add('bdm-card-hidden'));
 </script>
 </body>
 </html>
